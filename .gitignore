@@ -1,0 +1,38 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+/nodered
+
+# temorary development code and files
+temp/
+
+# IDE Files
+/.idea
+.vscode/
+.history/
+
+# production
+/build
+/sim_configs
+
+
+# logs
+*.log
+
+# cache
+.eslintcache
+
+# misc
+.DS_Store
+.env*
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# backups
+*.backup
+

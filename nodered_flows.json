@@ -1,0 +1,308 @@
+[
+    {
+        "id": "ef9659d278018d52",
+        "type": "tab",
+        "label": "Overview",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "babbfaaee6e4576b",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "681277bc3542b4e3",
+        "type": "tab",
+        "label": "_system",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "1b6920cb94d40582",
+        "type": "ui_group",
+        "name": "Example",
+        "tab": "1f7bd0231498bc60",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "1f7bd0231498bc60",
+        "type": "ui_tab",
+        "name": "Monitor",
+        "icon": "dvr",
+        "order": 1,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "ef0c289a9f2bb5d8",
+        "type": "ui_base",
+        "theme": {
+            "name": "theme-light",
+            "lightTheme": {
+                "default": "#0094CE",
+                "baseColor": "#744fa1",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
+                "edited": true,
+                "reset": false
+            },
+            "darkTheme": {
+                "default": "#097479",
+                "baseColor": "#097479",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
+                "edited": false
+            },
+            "customTheme": {
+                "name": "Untitled Theme 1",
+                "default": "#4B7930",
+                "baseColor": "#4B7930",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"
+            },
+            "themeState": {
+                "base-color": {
+                    "default": "#0094CE",
+                    "value": "#744fa1",
+                    "edited": true
+                },
+                "page-titlebar-backgroundColor": {
+                    "value": "#744fa1",
+                    "edited": false
+                },
+                "page-backgroundColor": {
+                    "value": "#fafafa",
+                    "edited": false
+                },
+                "page-sidebar-backgroundColor": {
+                    "value": "#333333",
+                    "edited": false
+                },
+                "group-textColor": {
+                    "value": "#9b7dbf",
+                    "edited": false
+                },
+                "group-borderColor": {
+                    "value": "#ffffff",
+                    "edited": false
+                },
+                "group-backgroundColor": {
+                    "value": "#ffffff",
+                    "edited": false
+                },
+                "widget-textColor": {
+                    "value": "#111111",
+                    "edited": false
+                },
+                "widget-backgroundColor": {
+                    "value": "#744fa1",
+                    "edited": false
+                },
+                "widget-borderColor": {
+                    "value": "#ffffff",
+                    "edited": false
+                },
+                "base-font": {
+                    "value": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"
+                }
+            },
+            "angularTheme": {
+                "primary": "indigo",
+                "accents": "blue",
+                "warn": "red",
+                "background": "grey",
+                "palette": "light"
+            }
+        },
+        "site": {
+            "name": "Node-RED Dashboard",
+            "hideToolbar": "false",
+            "allowSwipe": "false",
+            "lockMenu": "true",
+            "allowTempTheme": "true",
+            "dateFormat": "DD/MM/YYYY",
+            "sizes": {
+                "sx": 48,
+                "sy": 48,
+                "gx": 6,
+                "gy": 6,
+                "cx": 6,
+                "cy": 6,
+                "px": 0,
+                "py": 0
+            }
+        }
+    },
+    {
+        "id": "89c653ff282b5503",
+        "type": "ui_tab",
+        "name": "Device Data",
+        "icon": "settings_input_hdmi",
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "64c819a2ec7d497c",
+        "type": "ui_group",
+        "name": "Status",
+        "tab": "89c653ff282b5503",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "39bd60f605e849c3",
+        "type": "function",
+        "z": "ef9659d278018d52",
+        "name": "__example_from_node_red",
+        "func": "global.get('backend').send(node, msg)\n",
+        "outputs": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1000,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "23f14d5ff875f165",
+        "type": "function",
+        "z": "ef9659d278018d52",
+        "name": "__example_from_backend",
+        "func": "// See \"On Start\" tab",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "// Code added here will be run once\n// whenever the node is started.\nglobal.get('backend').on(node);\n",
+        "finalize": "",
+        "libs": [],
+        "x": 220,
+        "y": 200,
+        "wires": [
+            [
+                "ead03d127456cbb6"
+            ]
+        ]
+    },
+    {
+        "id": "ead03d127456cbb6",
+        "type": "ui_text",
+        "z": "ef9659d278018d52",
+        "group": "1b6920cb94d40582",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "From Backend on Send",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 990,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "c97ef101c4ba52c7",
+        "type": "ui_button",
+        "z": "ef9659d278018d52",
+        "name": "",
+        "group": "1b6920cb94d40582",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "SEND",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "",
+        "payloadType": "date",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 150,
+        "y": 120,
+        "wires": [
+            [
+                "39bd60f605e849c3"
+            ]
+        ]
+    },
+    {
+        "id": "bbe622643b4dfa79",
+        "type": "ui_text",
+        "z": "babbfaaee6e4576b",
+        "group": "64c819a2ec7d497c",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Random Every Second",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 990,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "a3df806c72f61ad8",
+        "type": "function",
+        "z": "babbfaaee6e4576b",
+        "name": "__every_second_data",
+        "func": "// See \"On Start\" tab",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "// Code added here will be run once\n// whenever the node is started.\nglobal.get('backend').on(node);\n",
+        "finalize": "",
+        "libs": [],
+        "x": 200,
+        "y": 140,
+        "wires": [
+            [
+                "bbe622643b4dfa79"
+            ]
+        ]
+    },
+    {
+        "id": "2e13608247b96332",
+        "type": "ui_template",
+        "z": "681277bc3542b4e3",
+        "group": "1b6920cb94d40582",
+        "name": "Global Style",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "format": "<link rel=\"icon\" type=\"image/png\" href=\"favicon.png\" sizes=\"32x32\">\n<link rel=\"shortcut icon\" type=\"image/png\" href=\"favicon.png\">\n<style>\n    #top-bar-logo-container {\n        height: 70%;\n        width: 190px;\n    }\n    #top-bar-logo {\n        background-image: url(/company_logo.png);\n        background-size: contain;\n        background-repeat: no-repeat;\n        background-position: left;\n        height: 100%;\n        width: 80%;\n    }\n    .md-toolbar-tools {\n        font-weight: bold;\n        box-shadow: 0px 1px 5px black;\n    }\n    .masonry-container {\n        margin-top: 10px;\n        width: 1400px\n    }\n    .inner-pre-style {\n        margin: 4px\n    }\n    .code {\n        white-space: pre;\n        font-family: monospace;\n    }\n    .high-alert {\n        color: red\n    }\n    .nng-table td{\n        vertical-align: baseline\n    }\n</style>\n<script>\n\nfunction checkIfLogoSet() {\n    const topbar = $('.md-toolbar-tools');\n    if ($('.md-toolbar-tools').length > 0){\n        if ($('#top-bar-logo-container').length) {\n            console.log($('#top-bar-logo-container'))\n            return;\n        }\n\n        const container = $('<div />').attr({id: \"top-bar-logo-container\"});\n        container.prependTo(topbar);\n        container.append($('<div />').attr({id: \"top-bar-logo\"}))\n        return;\n    }\n    setTimeout(checkIfLogoSet, 100)\n}\ncheckIfLogoSet();\n\n</script>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "global",
+        "className": "",
+        "x": 170,
+        "y": 100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "6ba02092fefd184a",
+        "type": "workspace-addon",
+        "z": "681277bc3542b4e3",
+        "name": "",
+        "value": "100, 880",
+        "x": 170,
+        "y": 60,
+        "wires": []
+    }
+]

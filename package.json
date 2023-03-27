@@ -1,0 +1,35 @@
+{
+  "name": "embedded-node-red-typescript",
+  "version": "0.1.0",
+  "description": "A template for creating an embedded Node RED project with Typescript",
+  "main": "build/main.js",
+  "scripts": {
+    "test": "jest",
+    "start": "npm run build && cross-env NODE_ENV=production node build/main.js",
+    "start:dev": "npm run build && node build/main.js",
+    "start:ide": "node build/main.js",
+    "build": "tsc -p tsconfig.json"
+  },
+  "author": "Alex Sharikov",
+  "license": "MIT",
+  "contributors": [
+    "Alex Sharikov"
+  ],
+  "repository": {
+    "url": "git@github.com:alex-controlx/embedded-node-red-typescript.git"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "node-red": "^3.0.2",
+    "node-red-contrib-cx-workspace-addon": "^0.0.1",
+    "node-red-dashboard": "^3.4.0",
+    "typescript": "^4.9.5"
+  },
+  "devDependencies": {
+    "@types/jest": "^27.5.2",
+    "@types/node": "^18.15.0",
+    "@types/node-red": "^1.2.1",
+    "cross-env": "^7.0.3",
+    "ts-jest": "^26.4.4"
+  }
+}
