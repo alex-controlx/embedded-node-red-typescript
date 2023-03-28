@@ -17,17 +17,17 @@ export function sendUiMessage(topic: string, msg: NodeMessage) {
  * This class exposed to Node-RED Admin for receiving and sending messages between Node-RED and the project logic.
  */
 export class UiBackend {
-    static send(nodeDef: NodeDef, msg: NodeMessage) {
-        const linkName = nodeDef.name;
-        logger.debug('Message from ' + linkName + ': ', msg.payload != null ? msg.payload : msg);
+    static send(msg: NodeMessage, nodeDef: NodeDef) {
+        const projectTopic = nodeDef.name;
+        logger.debug('Message from ' + projectTopic + ': ', msg.payload != null ? msg.payload : msg);
         const payload = (msg.payload != null ? msg.payload : {}) as {[key: string]: any};
 
-        if (linkName === '__example_from_node_red') {
+        if (projectTopic === '__example_from_node_red') {
             sendUiMessage('__example_from_backend', {payload, topic: '__example_from_backend'});
         }
     }
 
-    static on(nodeDef: NodeDef) {
+    static listener(nodeDef: NodeDef) {
         const topic = nodeDef.name;
         logger.debug('Subscribing to topic ' + topic);
 
