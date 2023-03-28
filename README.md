@@ -18,8 +18,13 @@ npm start
 
 ## Basic Usage
 After starting the project, you can access the Node RED editor at http://localhost:1880. To communicate from the 
-Node-RED editor to the Typescript project, you can use the function nodes. To send data from Node-RED to the
-project use the following code in the function node:
+Node-RED editor to the Typescript project, you can use the function nodes. On sending a message from Node-RED, 
+the function node name used as a `projectTopic` to switch between executions, so best practice is to use 
+unique node names. For listening to messages from the Typescript project, the function node name is used to
+find the node and send the message to from this node.
+
+
+To send data from Node-RED to the project use the following code in the function node:
 ```javascript
 // give a name for the node, e.g. '__example_from_node_red'
 global.get('backend').send(node, msg)
