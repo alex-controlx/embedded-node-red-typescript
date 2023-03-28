@@ -93,9 +93,11 @@ logger.info(` ====== Starting the module in ${isDev ? "DEVELOPMENT" : "PRODUCTIO
 
 try {
     new DotEnvDebug(Logger.debugModules, envDebugPath, logger);
-    if (Logger.debugModules.includes('all'))
-        Logger.isDebugAll = true;
+    if (Logger.debugModules.includes('all')) Logger.isDebugAll = true;
 } catch (err: any) {
     logger.error(err);
     Logger.isDebugAll = true;
 }
+
+if (Logger.isDebugAll)
+    logger.debug(' *** WARNING: Debug mode is enabled for ALL modules. It could flood the log pretty quickly. ***');
