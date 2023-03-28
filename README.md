@@ -34,5 +34,5 @@ To receive data from the project to Node-RED, you can use the following code in 
 ```javascript
 // give a name for the node, e.g. '__example_from_backend'
 // and in "On Start" tab add the following code:
-global.get('backend').on(node);
+global.get('backend').listener(node);
 ```
