@@ -1,10 +1,10 @@
 import nodeRed, {Node, NodeDef, NodeMessage} from "node-red";
-import Logger from "../utils/logger";
+import Logger from "../../utils/logger";
 
 type TopicListeners = Map<string, Node>;
 const uiListeners = new Map<string, TopicListeners>();
 const logger = new Logger(module);
-
+let uiServiceCallback: (topic: string, msg: NodeMessage) => void;
 
 export function sendUiMessage(topic: string, msg: NodeMessage) {
     const topicListeners = uiListeners.get(topic);
@@ -12,6 +12,9 @@ export function sendUiMessage(topic: string, msg: NodeMessage) {
         topicListeners.forEach(listener => listener.send(msg))
 }
 
+export function registerCallbackOnIncomingUiMessages(_callback: (topic: string, msg: NodeMessage) => void) {
+    uiServiceCallback = _callback;
+}
 
 /**
  * This class exposed to Node-RED Admin for receiving and sending messages between Node-RED and the project logic.
@@ -20,11 +23,7 @@ export class UiBackend {
     static send(msg: NodeMessage, nodeDef: NodeDef) {
         const projectTopic = nodeDef.name;
         logger.debug('Message from ' + projectTopic + ': ', msg.payload != null ? msg.payload : msg);
-        const payload = (msg.payload != null ? msg.payload : {}) as {[key: string]: any};
-
-        if (projectTopic === '__example_from_node_red') {
-            sendUiMessage('__example_from_backend', {payload, topic: '__example_from_backend'});
-        }
+        uiServiceCallback(projectTopic, msg);
     }
 
     static listener(nodeDef: NodeDef) {

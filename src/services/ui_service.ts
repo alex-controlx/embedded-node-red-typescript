@@ -1,25 +1,19 @@
-import * as http from "http";
-import express from "express";
 import Logger from "../utils/logger";
-import nodeRed from "node-red";
-import {LocalSettings, Permission} from "@node-red/runtime";
-import {sendUiMessage, UiBackend} from "../classes/ui_backend";
+import {registerCallbackOnIncomingUiMessages, sendUiMessage} from "../classes/ui/backend_apis";
+import EmbeddedNodeRed from "../classes/ui/embedded_nodered";
 
 const logger = new Logger(module);
-
-export interface IAppGuiConfig {
-    credentialSecret?: string;
-    host?: string;
-    port?: number
-}
+const SETTINGS_FILE_NAME = 'nodered.settings.js';
 
 export class UiService {
     private static isInitialised = false;
 
-    static async initAsync(config?: IAppGuiConfig) {
+    static async initAsync() {
         if (this.isInitialised) return; // execute this method only once
 
-        const nodeRedApp = new NodeRedService(config);
+        registerCallbackOnIncomingUiMessages(UiService.messageReceivedFromUi);
+
+        const nodeRedApp = new EmbeddedNodeRed(SETTINGS_FILE_NAME);
         await nodeRedApp.start();
 
         // add your initialisation code to send messages to the UI
@@ -29,6 +23,7 @@ export class UiService {
         //     this.publishMessage('__change_example', {payload: state, topic: 'your_class'});
         // });
 
+
         // ==========================
         // Below is an example of sending messages every second
         setInterval(() => {
@@ -37,104 +32,15 @@ export class UiService {
             )
         }, 1000);
 
-
         this.isInitialised = true;
     }
-}
 
 
-class NodeRedService {
-    private settings: LocalSettings = {
-        uiHost: "0.0.0.0", uiPort: 1880,
-        credentialSecret: "a-secret-key",
-        httpAdminRoot: "/admin",
-        httpNodeRoot: "",
-        flowFile: process.cwd() + "/nodered_flows.json",
-        flowFilePretty: true,
-        userDir: "./nodered/",
-        functionGlobalContext: {
-            backend: UiBackend
-        },
-        paletteCategories: ['dashboard'],
-        logging: {
-            console: {
-                level: Logger.debugModules.includes('node-red') ? 'debug' : 'warn',
-                audit: false,
-                metrics: false
-            },
-        },
-        adminAuth: {
-           type: "credentials",
-           users: []
-        },
-        editorTheme: {
-            page: {
-                title: "Admin panel",
-                favicon: process.cwd() + "/assets/favicon_admin.png",
-            },
-            header: {
-                title: "Admin panel",
-                image: process.cwd() + "/assets/company_logo.png",
-                url: "https://github.com/alex-controlx/embedded-node-red-typescript"
-            },
-            projects: { enabled: false }
-        },
-        ui: { path: "" },
-        contextStorage: {
-            default: { module: "memory" },
-            fs : { module: "localfilesystem" }
+    static messageReceivedFromUi(projectTopic: string, msg: any) {
+        const payload = (msg.payload != null ? msg.payload : {}) as {[key: string]: any};
+
+        if (projectTopic === '__example_from_node_red') {
+            sendUiMessage('__example_from_backend', {payload, topic: '__example_from_backend'});
         }
-    };
-
-    constructor(config?: IAppGuiConfig) {
-        config = config || {};
-
-        if (config.host) this.settings.uiHost = config.host;
-        if (process.env.DEFAULT_RED_HOST) this.settings.uiHost = process.env.DEFAULT_RED_HOST;
-
-        if (config.port) this.settings.uiPort = config.port;
-        if (Number(process.env.DEFAULT_RED_PORT)) this.settings.uiPort = Number(process.env.DEFAULT_RED_PORT);
-
-        if (config.credentialSecret) this.settings.credentialSecret = config.credentialSecret;
-
-        if (process.env.NODE_RED_ADMIN_USER && process.env.NODE_RED_ADMIN_PASSWORD_HASH) {
-            const username = {
-               username: process.env.NODE_RED_ADMIN_USER,
-               password: process.env.NODE_RED_ADMIN_PASSWORD_HASH,
-               permissions: ('*' as Permission)
-           }
-           if (this.settings.adminAuth?.users && Array.isArray(this.settings.adminAuth.users)) {
-               this.settings.adminAuth?.users.push(username);
-           }
-        }
-
-
-        // setting up ExpressJS Server
-        const app = express();
-        const server = http.createServer(app);
-        app.use("/",express.static("assets"));
-        nodeRed.init(server, this.settings);
-        app.use(this.settings.httpAdminRoot || "", nodeRed.httpAdmin);
-        app.use(this.settings.httpNodeRoot || "", nodeRed.httpNode);
-        server.listen(this.settings.uiPort, this.settings.uiHost);
-    }
-
-    async start() {
-        return new Promise<void>((accept, reject) => {
-            logger.debug("Starting Node-RED");
-            const host = this.settings.uiHost;
-            const port = this.settings.uiPort;
-
-            nodeRed.runtime.events.once("flows:started", () => {
-                logger.debug("Node-RED Flows started");
-                accept();
-            });
-
-            // Starting RED
-            nodeRed.start().then(() => {
-                logger.info(`Node-RED running on http://${host}:${port}${this.settings.httpAdminRoot}/`);
-                logger.info(`Node-RED UI is on http://${host}:${port}${this.settings.httpNodeRoot}/`);
-            }).catch(reject);
-        })
     }
 }
