@@ -1,10 +1,10 @@
-import {LocalSettings} from "@node-red/runtime";
-import Logger, {isDev} from "../../utils/logger";
-import express from "express";
-import http from "http";
-import nodeRed from "node-red";
-import path from "path";
-import fs from "fs-extra";
+import { LocalSettings } from '@node-red/runtime';
+import Logger, { isDev } from '../../utils/logger';
+import express from 'express';
+import http from 'http';
+import nodeRed from 'node-red';
+import path from 'path';
+import fs from 'fs-extra';
 
 
 const logger = new Logger(module);
@@ -14,27 +14,28 @@ export default class EmbeddedNodeRed {
     constructor(private settingsFileName: string) {
         const settings: LocalSettings = this.getSettingsFile();
 
-        const level = Logger.debugModules.includes('node-red') ?
-             'debug' : (isDev ? 'info' : 'warn');
-        if (settings.logging?.console)
-            settings.logging.console.level = level;
+        let level: 'debug' | 'info' | 'warn' = 'warn';
+        if (Logger.debugModules.includes('node-red')) level = 'debug';
+        else if (isDev) level = 'info';
+
+        if (settings.logging?.console) settings.logging.console.level = level;
 
         // setting up ExpressJS Server
         const app = express();
         const server = http.createServer(app);
-        app.use("/",express.static("assets"));
+        app.use('/', express.static('assets'));
         nodeRed.init(server, settings);
-        app.use(settings.httpAdminRoot || "", nodeRed.httpAdmin);
-        app.use(settings.httpNodeRoot || "", nodeRed.httpNode);
+        app.use(settings.httpAdminRoot || '', nodeRed.httpAdmin);
+        app.use(settings.httpNodeRoot || '', nodeRed.httpNode);
         server.listen(settings.uiPort, settings.uiHost);
     }
 
     async start() {
         return new Promise<void>((accept, reject) => {
-            logger.debug("Starting Node-RED");
+            logger.debug('Starting Node-RED');
 
-            nodeRed.runtime.events.once("flows:started", () => {
-                logger.debug("Node-RED Flows started");
+            nodeRed.runtime.events.once('flows:started', () => {
+                logger.debug('Node-RED Flows started');
                 accept();
             });
 
@@ -48,7 +49,7 @@ export default class EmbeddedNodeRed {
                 logger.info(`Node-RED running on http://${host}:${port}${httpAdminRoot}/`);
                 logger.info(`Node-RED UI is on http://${host}:${port}${httpNodeRoot}/`);
             }).catch(reject);
-        })
+        });
     }
 
     getSettingsFile(): LocalSettings {
@@ -69,6 +70,7 @@ export default class EmbeddedNodeRed {
                 settingsFile = defaultSettings;
             }
         }
+        // eslint-disable-next-line global-require
         return require(settingsFile);
     }
 }

@@ -1,6 +1,6 @@
-import Logger from "../utils/logger";
-import {registerCallbackOnIncomingUiMessages, sendUiMessage} from "../classes/ui/backend_apis";
-import EmbeddedNodeRed from "../classes/ui/embedded_nodered";
+import Logger from '../utils/logger';
+import { registerCallbackOnIncomingUiMessages, sendUiMessage } from '../classes/ui/backend_apis';
+import EmbeddedNodeRed from '../classes/ui/embedded_nodered';
 
 const logger = new Logger(module);
 const SETTINGS_FILE_NAME = 'nodered.settings.js';
@@ -27,9 +27,10 @@ export class UiService {
         // ==========================
         // Below is an example of sending messages every second
         setInterval(() => {
-            sendUiMessage('__every_second_data',
-                {payload: Math.random().toFixed(2), topic: '__every_second_data'}
-            )
+            sendUiMessage(
+                '__every_second_data',
+                { payload: Math.random().toFixed(2), topic: '__every_second_data' },
+            );
         }, 1000);
 
         this.isInitialised = true;
@@ -40,7 +41,7 @@ export class UiService {
         const payload = (msg.payload != null ? msg.payload : {}) as {[key: string]: any};
 
         if (projectTopic === '__example_from_node_red') {
-            sendUiMessage('__example_from_backend', {payload, topic: '__example_from_backend'});
+            sendUiMessage('__example_from_backend', { payload, topic: '__example_from_backend' });
         }
     }
 }

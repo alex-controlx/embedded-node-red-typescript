@@ -1,29 +1,37 @@
-import path from "path";
+import path from 'path';
 
-import DotEnvDebug from "./debug_tracker";
+import DotEnvDebug from './debug_tracker';
 
-export const isDev = !process.env.NODE_ENV || process.env.NODE_ENV.trim() !== "production";
+export const isDev = !process.env.NODE_ENV || process.env.NODE_ENV.trim() !== 'production';
 let lastLoggedAt = Date.now();
 
 /**
  * Custom Logger class
  * The log includes the timestamp, module name, log level, the message and the time since the last log.
  * 2023-03-11 23:53:30.965 - main - INFO - Starting app3 [1006ms]
+ *
+ * version: v1.0.0
  */
 export default class Logger {
     static isDebugAll = false;
+
     static debugModules: string[] = [];
+
+    static envDebugPath = '.env.debug';
+
+    private static dotEnvDebug?: DotEnvDebug;
+
     private readonly name: string;
 
-    constructor(module: NodeModule) {
-        this.name = path.parse(module.filename).name;
+    constructor(module: NodeModule | string) {
+        this.name = typeof module === 'string' ? module : path.parse(module.filename).name + '[js]';
     }
 
     public debug(...args: any) {
         if (Logger.isDebugAll || Logger.debugModules.includes(this.name)) {
             let caller = '';
             if (isDev) {
-                const callerProps = new Error().stack?.split("\n")[2]?.trim().split(" ") || [];
+                const callerProps = new Error().stack?.split('\n')[2]?.trim().split(' ') || [];
                 caller = callerProps.length < 3 ? '<constructor>' : callerProps[1];
             }
             const prefix = this.prefix('DEBUG', caller);
@@ -34,7 +42,7 @@ export default class Logger {
     public info(...args: any) {
         let caller = '';
         if (isDev) {
-            const callerProps = new Error().stack?.split("\n")[2]?.trim().split(" ") || [];
+            const callerProps = new Error().stack?.split('\n')[2]?.trim().split(' ') || [];
             caller = callerProps.length < 3 ? '<constructor>' : callerProps[1];
         }
         const prefix = this.prefix('INFO', caller);
@@ -44,7 +52,7 @@ export default class Logger {
     public warn(...args: any) {
         let caller = '';
         if (isDev) {
-            const callerProps = new Error().stack?.split("\n")[2]?.trim().split(" ") || [];
+            const callerProps = new Error().stack?.split('\n')[2]?.trim().split(' ') || [];
             caller = callerProps.length < 3 ? '<constructor>' : callerProps[1];
         }
         const prefix = this.prefix('WARN', caller);
@@ -54,11 +62,16 @@ export default class Logger {
     public error(error: Error | string) {
         let caller = '';
         if (isDev) {
-            const callerProps = new Error().stack?.split("\n")[2]?.trim().split(" ") || [];
+            const callerProps = new Error().stack?.split('\n')[2]?.trim().split(' ') || [];
             caller = callerProps.length < 3 ? '<constructor>' : callerProps[1];
         }
         const prefix = this.prefix('ERROR', caller);
-        const message = typeof error === "string" ? error : (error.message ? error.message : error);
+
+        let message;
+        if (typeof error === 'string') message = error;
+        else if (error.message) message = error.message;
+        else message = error;
+
         console.error(prefix, message);
     }
 
@@ -67,7 +80,7 @@ export default class Logger {
         const diff = now.getTime() - lastLoggedAt;
         lastLoggedAt = now.getTime();
         callerName = callerName ? this.name + '.' + callerName : this.name;
-        return Logger.timePrefix(now) + ' [' + diff + 'ms]' + ' - ' + level + ' - ' + callerName + " -";
+        return Logger.timePrefix(now) + ' [' + diff + 'ms]' + ' - ' + level + ' - ' + callerName + ' -';
     }
 
     static timePrefix(now?: Date): string {
@@ -84,20 +97,14 @@ export default class Logger {
     static timestampedMessage(message: string): string {
         return Logger.timePrefix() + ' - ' + message;
     }
+
+    static initDotEnvDebug() {
+        if (this.dotEnvDebug) return;
+
+        this.dotEnvDebug = new DotEnvDebug(Logger.debugModules, Logger.envDebugPath, logger);
+        if (Logger.debugModules.includes('all')) Logger.isDebugAll = true;
+    }
 }
 
-
-const envDebugPath = ".env.debug";
 const logger = new Logger(module);
-logger.info(` ====== Starting the module in ${isDev ? "DEVELOPMENT" : "PRODUCTION"} mode ====== `);
-
-try {
-    new DotEnvDebug(Logger.debugModules, envDebugPath, logger);
-    if (Logger.debugModules.includes('all')) Logger.isDebugAll = true;
-} catch (err: any) {
-    logger.error(err);
-    Logger.isDebugAll = true;
-}
-
-if (Logger.isDebugAll)
-    logger.debug(' *** WARNING: Debug mode is enabled for ALL modules. It could flood the log pretty quickly. ***');
+logger.info(` ====== Starting the module in ${isDev ? 'DEVELOPMENT' : 'PRODUCTION'} mode ====== `);

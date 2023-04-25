@@ -1,11 +1,11 @@
-import {envs} from './env.config';
-import Logger from "./utils/logger";
-import {UiService} from "./services/ui_service";
+import { envs } from './env.config';
+import Logger from './utils/logger';
+import { UiService } from './services/ui_service';
 
 process.title = 'your_app_name';
 const logger = new Logger(module);
 
-start().catch(err => logger.error(err))
+start().catch(err => logger.error(err));
 
 /**
  * Main entry point of the app.
